@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Profit calculator · SKD Group</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%2314213D'/><text x='32' y='44' font-size='34' text-anchor='middle' fill='%23C9A86A' font-family='Georgia'>S</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+.wrap{max-width:1320px}
+.chead{padding:56px 0 26px}
+.chead h1{font-size:clamp(40px,5vw,66px)}
+.chead p.lede{max-width:760px}
+/* starting point */
+.start{display:grid;grid-template-columns:auto repeat(3,1fr) auto;gap:12px;align-items:stretch;margin-top:28px}
+.start .lab{display:flex;align-items:center;font-weight:700;color:var(--navy);font-size:15px;padding-right:6px}
+.scard{text-align:left;border:1.5px solid var(--line);background:var(--paper);border-radius:18px;padding:14px 18px;cursor:pointer;transition:all .25s}
+.scard b{display:block;color:var(--navy);font-size:15.5px}.scard span{font-size:13px;color:var(--muted)}
+.scard:hover{border-color:#D9C49B;transform:translateY(-2px)}
+.scard.on{background:var(--navy);border-color:var(--navy)}.scard.on b{color:#fff}.scard.on span{color:#C9D1E3}
+#reset{align-self:center}
+/* sticky results bar */
+.rwrap{position:sticky;top:68px;z-index:15;padding:12px 0;background:var(--ivory);box-shadow:0 12px 20px -16px rgba(20,33,61,.25)}
+#rbar{display:grid;grid-template-columns:1.5fr repeat(5,1fr);gap:10px}
+.rb{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:12px 16px;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 14px 30px -24px rgba(20,33,61,.4)}
+.rb:hover{transform:translateY(-2px)}
+.rb span{font-size:12.5px;color:var(--muted);display:block}.rb b{font-family:Fraunces,serif;font-weight:400;font-size:24px;color:var(--navy);display:block;line-height:1.2;white-space:nowrap}
+.rb b em{font-style:normal;font-family:Manrope;font-size:12px;color:var(--muted)}
+.rb small{font-size:12px;font-weight:700;display:block}
+.rb.main{background:linear-gradient(135deg,#C9A86A,#A8803F);border:none;color:#fff}
+.rb.main span{color:rgba(255,255,255,.9);font-weight:600}.rb.main b{color:#fff;font-size:34px;font-weight:300}
+.rb.main small .up,.rb.main small .dn,.rb.main small .flat{color:#fff}
+#rbar.neg .rb.main{background:linear-gradient(135deg,#C8795A,#9C4A35)}
+/* main grid */
+.cgrid{display:grid;grid-template-columns:270px minmax(0,1fr) 320px;gap:22px;align-items:start;margin-top:8px}
+.side{position:sticky;top:190px}
+#tabs{display:grid;gap:8px}
+#tabs button{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;cursor:pointer;transition:all .2s;font-family:inherit}
+#tabs button:hover{border-color:#D9C49B}
+#tabs button b{display:block;color:var(--navy);font-size:15px}#tabs button small{display:block;color:var(--muted);font-size:12.5px;line-height:1.35;margin-top:1px}
+#tabs button.on{background:var(--navy);border-color:var(--navy);box-shadow:0 16px 30px -18px rgba(20,33,61,.6)}
+#tabs button.on b{color:#fff}#tabs button.on small{color:#C9D1E3}
+.mi{width:32px;height:32px;border-radius:50%;background:var(--goldsoft);color:var(--gold);font:500 16px Fraunces,serif;display:grid;place-items:center}
+#tabs button.on .mi{background:var(--gold2);color:var(--navy)}
+.mi.big{width:46px;height:46px;font-size:22px;background:var(--navy);color:var(--gold2);flex:none}
+.mb{font-style:normal;background:var(--gold);color:#fff;border-radius:999px;font-size:11.5px;font-weight:700;min-width:22px;height:22px;display:grid;place-items:center;padding:0 6px}
+#ctlpanel{scroll-margin-top:190px}
+#ctlhead{display:flex;gap:16px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:22px 22px 0 0;border-bottom:none;padding:22px 26px}
+#ctlhead h3{font-family:Fraunces,serif;font-weight:400;font-size:28px;color:var(--navy);line-height:1.1}
+#ctlhead p{color:var(--muted);font-size:14.5px;margin-top:2px}
+#ctls{background:var(--paper);border:1px solid var(--line);border-radius:0 0 22px 22px;padding:6px 26px 18px;box-shadow:0 18px 40px -24px rgba(20,33,61,.25)}
+#ctls .ctl{padding:20px 0 16px;border-bottom:1px solid #EFE7D7;border-radius:0}
+#ctls .ctl:last-child{border-bottom:none}
+#ctls .ct{display:flex;justify-content:space-between;align-items:center;gap:16px}
+#ctls .cl{font-size:16px;font-weight:700;color:var(--navy)}
+#ctls .ctl.line .cl{font-size:14.5px;font-weight:600}
+#ctls .ct span::before{display:none}
+.cv{background:var(--goldsoft);color:#7A5A22;font-weight:700;font-size:15px;padding:6px 14px;border-radius:999px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ctl.chg .cv{background:var(--navy);color:#fff}
+.cn{font-size:13.5px;color:var(--muted);margin-top:4px;max-width:560px}
+.mm{display:flex;justify-content:space-between;font-size:11.5px;color:#A3A8B3;margin-top:4px}
+.cfoot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px;min-height:0}
+.imp{font-size:13px;font-weight:700}
+#ctls .rs{display:none;border:1px solid var(--line);background:#fff;color:var(--navy);font:600 12px Manrope;padding:5px 10px;border-radius:999px;cursor:pointer;text-decoration:none;margin:0}
+#ctls .ctl.chg .rs{display:inline-block}
+#ctls .subh{font-size:13px;color:var(--gold);font-weight:700;padding:22px 0 0;border-top:2px solid var(--goldsoft);margin-top:8px}
+#ctls .choice button{font-size:14px;padding:10px 16px}
+/* range */
+#ctls input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;margin-top:10px;--p:50%}
+#ctls input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:9px;background:linear-gradient(90deg,#C9A86A 0,#A8803F var(--p),#ECE4D4 var(--p))}
+#ctls input[type=range]::-moz-range-track{height:8px;border-radius:9px;background:linear-gradient(90deg,#C9A86A 0,#A8803F var(--p),#ECE4D4 var(--p))}
+#ctls input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid #A8803F;margin-top:-8px;box-shadow:0 4px 10px rgba(20,33,61,.25);cursor:grab}
+#ctls input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #A8803F;box-shadow:0 4px 10px rgba(20,33,61,.25)}
+/* changes */
+.chbox{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:20px 20px 18px;box-shadow:0 18px 40px -24px rgba(20,33,61,.25)}
+.chbox h4{font-family:Fraunces,serif;font-weight:400;font-size:22px;color:var(--navy)}
+.chbox>p{font-size:13px;color:var(--muted);margin-bottom:12px}
+.chempty{background:#FBF6EC;border-radius:14px;padding:16px}.chempty b{display:block;color:var(--navy)}.chempty span{font-size:13.5px;color:var(--muted)}
+.chtot{background:var(--navy);color:#fff;border-radius:16px;padding:14px 16px;margin-bottom:10px}
+.chtot span{font-size:12.5px;color:#C9D1E3;display:block}.chtot b{font-family:Fraunces,serif;font-weight:400;font-size:28px}.chtot b.up{color:#B9D6A6}.chtot b.dn{color:#F0A890}
+.chtot small{display:block;font-size:12px;color:#C9D1E3}
+.chrow{width:100%;display:flex;justify-content:space-between;gap:10px;align-items:center;text-align:left;background:none;border:none;border-bottom:1px dashed #EEE6D6;padding:10px 2px;cursor:pointer;font:600 13.5px Manrope;color:var(--navy)}
+.chrow:hover{background:#FBF6EC}
+.chrow small{display:block;font-weight:500;color:var(--muted);font-size:12px}.chrow small b{color:var(--navy)}
+.chrow>span:last-child{white-space:nowrap;font-weight:700}
+/* results */
+.story{margin-top:56px;padding:22px 28px;font-size:18px;line-height:1.65;background:#FBF6EC;border-radius:22px;border:1px solid var(--line)}
+.kgroup{margin-top:28px}.kgroup h4{font-size:14px;color:var(--gold);font-weight:700;margin-bottom:10px}
+.kgroup .kgrid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.kpi .v{font-size:26px}
+@media (max-width:1180px){.cgrid{grid-template-columns:250px minmax(0,1fr)}.chcol{grid-column:1/-1}.side.chcol{position:static}#rbar{grid-template-columns:repeat(3,1fr)}#rbar .rb.main{grid-column:1/-1}.rwrap{position:static}.side{top:84px}}
+@media (max-width:800px){.cgrid{grid-template-columns:1fr}.side{position:static}#tabs{grid-template-columns:1fr 1fr}#tabs button small{display:none}.start{grid-template-columns:1fr}.start .lab{padding:0}#rbar{grid-template-columns:1fr 1fr}#ctlhead,#ctls{padding-left:18px;padding-right:18px}#ctls .ct{flex-wrap:wrap;gap:8px}}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<nav><div class="wrap"><a class="brand" href="index.html"><i>S</i>SKD Group</a>
+<div class="links"><a href="index.html">← Project overview</a><a href="#ctlpanel">Change numbers</a><a href="#results">All results</a><a href="#pl">Profit &amp; loss</a></div>
+<a class="btn" href="SKD_Empire_Project_Presentation.pdf" download>Download PDF</a></div></nav>
+
+<header class="chead"><div class="wrap">
+ <div class="kicker">SKD Empire · Profit calculator</div>
+ <h1>Try your own numbers, <em>see the profit</em></h1>
+ <p class="lede">Choose a starting point, pick a topic from the menu and move the sliders. The results at the top update instantly, and the panel on the right lists every change with its own effect on profit. Tap any number to see how it is worked out.</p>
+ <div class="start" id="scen">
+  <div class="lab">Start from</div>
+  <button class="scard" data-s="conservative"><b>Tough market</b><span>Prices 7% lower, sales 50% slower</span></button>
+  <button class="scard on" data-s="base"><b>Our plan</b><span>₹10,000 launch, sales from Dec 2026</span></button>
+  <button class="scard" data-s="optimistic"><b>Strong market</b><span>Prices 8% higher, sales 20% faster</span></button>
+  <button class="btn ghost" id="reset">↺ Back to plan</button>
+ </div>
+</div></header>
+
+<div class="rwrap"><div class="wrap"><div id="rbar"></div></div></div>
+
+<div class="wrap">
+ <div class="cgrid">
+  <aside class="side"><div style="font-size:13px;font-weight:700;color:var(--muted);margin:4px 0 10px">What do you want to change?</div><div id="tabs"></div></aside>
+  <main id="ctlpanel"><div id="ctlhead"></div><div id="ctls"></div></main>
+  <aside class="side chcol"><div class="chbox"><h4>Your changes</h4><p>Each change and what it does to profit on its own.</p><div id="changes"></div></div></aside>
+ </div>
+
+ <section id="results" style="padding:0">
+  <div class="story" id="story"></div>
+  <div id="kgrid"></div>
+  <div class="card chart" style="padding:24px 26px;margin-top:28px"><b style="color:var(--navy);font-size:16px">From money in to profit</b> <span style="color:var(--muted);font-size:13px">· ₹ crore · tap a bar for its detail</span><div id="wf" style="margin-top:12px"></div></div>
+ </section>
+</div>
+
+<section id="pl" class="pl" style="margin-top:70px"><div class="wrap">
+ <div class="kicker" style="color:#E1C48A">Profit &amp; loss statement</div><h2>With your numbers, <em>here is the result</em></h2>
+ <p class="lede" style="color:#AEB8CF">Updates with every change above. Click any line for its detail.</p>
+ <div class="grid plg" style="grid-template-columns:1.3fr 1fr;margin-top:30px;align-items:start">
+  <div style="background:#FFFDF9;color:var(--ink);border-radius:24px;padding:16px 24px"><table id="pltable"></table></div>
+  <div class="grid">
+   <div class="hpbt" id="plbig" data-open="kpi:pbt" style="display:block"><div style="font-weight:600;opacity:.9">Profit before tax</div><div class="big num" id="pbtBig" style="font-size:64px"></div><div id="pbtSub"></div></div>
+   <div class="tiles" id="plTiles"></div>
+  </div>
+ </div>
+</div></section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap"><span><b style="color:var(--navy)">SKD Group</b> · <a href="index.html">Back to the project overview</a></span><span>Confidential — for promoters only · planning estimates as of November 2026</span></div></footer>
+
+<div id="scrim"></div>
+<aside id="drawer" aria-hidden="true"><div id="dbody"></div></aside>
+
+<script src="assets/model.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
